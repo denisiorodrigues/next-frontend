@@ -1,4 +1,56 @@
-export function NewRoutePage() {
+export async function searchDirections(source: string, destination: string) {
+  const [sourceResponse, destinationResponse] = await Promise.all([
+    fetch(`http://localhost:3001/places?text=${source}`),
+    fetch(`http://localhost:3001/places?text=${destination}`)
+  ]);
+
+  if(!destinationResponse.ok) {
+    console.error(await sourceResponse.text());
+    throw new Error('Filed to fetch destination data');
+  }
+
+  const [sourceData, destinationData] = await Promise.all([
+    sourceResponse.json(),
+    destinationResponse.json(),
+  ])
+
+  const placeSourceId = sourceData.candidates[0].place_id;
+  const placeDestinationId = destinationData.candidates[0].place_id;
+
+  const directionsResponse = await fetch(`http://localhost:3001/directions?originId=${placeSourceId}&destinationId=${placeDestinationId}`)
+
+  if(!directionsResponse.ok){
+    console.error(await directionsResponse.text());
+    throw Error('Faild to fetch directions');
+  }
+
+  const directionsData = await directionsResponse.json();
+
+  return {
+    directionsData,
+    placeSourceId,
+    placeDestinationId
+  }
+}
+
+export async function NewRoutePage({ 
+  searchParams,
+} : { searchParams: Promise<{ source: string; destination: string; }>;
+}) {
+  const { source, destination } = await searchParams;
+
+  const result = source && destination ? await searchDirections(source, destination) : null;
+
+  let directionsData = null;
+  let placeSourceId = null;
+  let placeDestinationId = null;
+
+  if(result) {
+    directionsData = result.directionsData;
+    placeSourceId = result.placeSourceId;
+    placeDestinationId = result.placeDestinationId;
+  }
+
   return (
     <div className="flex flex-1 w-full h-full">
       <div className="w-1/3 p-4 h-full">
@@ -43,24 +95,24 @@ export function NewRoutePage() {
             Pesquisar
           </button>
         </form>
-        {/* {directionsData && ( */}
+        {directionsData && (
           <div className="mt-4 p-4 border rounded text-contrast">
             <ul>
               <li className="mb-2">
                 <strong>Origem:</strong>{" "}
-                {/* {directionsData.routes[0].legs[0].start_address} */}
+                {directionsData.routes[0].legs[0].start_address}
               </li>
               <li className="mb-2">
                 <strong>Destino:</strong>{" "}
-                {/* {directionsData.routes[0].legs[0].end_address} */}
+                {directionsData.routes[0].legs[0].end_address}
               </li>
               <li className="mb-2">
                 <strong>Distância:</strong>{" "}
-                {/* {directionsData.routes[0].legs[0].distance.text} */}
+                {directionsData.routes[0].legs[0].distance.text}
               </li>
               <li className="mb-2">
                 <strong>Duração:</strong>{" "}
-                {/* {directionsData.routes[0].legs[0].duration.text} */}
+                {directionsData.routes[0].legs[0].duration.text}
               </li>
             </ul>
             {/* <NewRouteForm> */}
@@ -86,7 +138,7 @@ export function NewRoutePage() {
               </button>
             {/* </NewRouteForm> */}
           </div>
-        {/* )} */}
+        )}
       </div>
       {/* <MapNewRoute directionsData={directionsData} /> */}
     </div>

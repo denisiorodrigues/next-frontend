@@ -17,6 +17,14 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 --- 
 
+## Dicas
+
+Utlilizei a extensão *Peacock* para diferênciar os projetos abertos no vscode com cores
+
+(johnpapa.vscode-peacock)[https://marketplace.visualstudio.com/items?itemName=johnpapa.vscode-peacock]
+
+--- 
+
 ## Getting Started
 
 First, run the development server:
