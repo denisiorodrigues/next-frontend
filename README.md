@@ -1,5 +1,22 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+# Front-end
+
+## Tecnologias utilizadas
+- TypeScript/Javascript
+- React.js
+- React Server Components
+- Google Maps API
+- Tailwind
+
+---
+
+## Funcionalidades
+- Monitoramento de veículos
+- Integrar com Google Maps para criar rota
+
+--- 
+
 ## Getting Started
 
 First, run the development server:
