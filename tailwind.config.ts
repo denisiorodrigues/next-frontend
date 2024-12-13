@@ -12,7 +12,9 @@ export default {
         // background: "var(--background)",
         // foreground: "var(--foreground)",
         default: "#242526",
-        main: "#ffcd00"
+        main: "#ffcd00",
+        error: "#f35759",
+        success: "#366912",
       },
       textColor: {
         primary: "#242526",

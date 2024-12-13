@@ -1,7 +1,19 @@
+import { NewRouteForm } from "./newRouteForm";
+
 export async function searchDirections(source: string, destination: string) {
   const [sourceResponse, destinationResponse] = await Promise.all([
-    fetch(`http://localhost:3001/places?text=${source}`),
-    fetch(`http://localhost:3001/places?text=${destination}`)
+    fetch(`http://localhost:3001/places?text=${source}`,{
+      // cache: "force-cache", //default
+      // next: {
+      //   revalidate: 1 * 60 * 60 * 24, // 1 dia
+      // }
+    }),
+    fetch(`http://localhost:3001/places?text=${destination}`,{
+      // cache: "force-cache", //default
+      // next: {
+      //   revalidate: 1 * 60 * 60 * 24, // 1 dia
+      // }
+    })
   ]);
 
   if(!destinationResponse.ok) {
@@ -17,7 +29,14 @@ export async function searchDirections(source: string, destination: string) {
   const placeSourceId = sourceData.candidates[0].place_id;
   const placeDestinationId = destinationData.candidates[0].place_id;
 
-  const directionsResponse = await fetch(`http://localhost:3001/directions?originId=${placeSourceId}&destinationId=${placeDestinationId}`)
+  const directionsResponse = await fetch(`http://localhost:3001/directions?originId=${placeSourceId}&destinationId=${placeDestinationId}`,
+    {
+      // cache: "force-cache", //default
+      // next: {
+      //   revalidate: 1 * 60 * 60 * 24, // 1 dia
+      // },
+    }
+  )
 
   if(!directionsResponse.ok){
     console.error(await directionsResponse.text());
@@ -62,7 +81,7 @@ export async function NewRoutePage({
               name="source"
               type="search"
               placeholder=""
-              defaultValue={""}
+              defaultValue={source}
               className="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-contrast bg-default border-0 border-b-2 border-contrast appearance-none focus:outline-none focus:ring-0 focus:border-primary peer"
             />
             <label
@@ -78,7 +97,7 @@ export async function NewRoutePage({
               name="destination"
               type="search"
               placeholder=""
-              defaultValue={""}
+              defaultValue={destination}
               className="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-contrast bg-default border-0 border-b-2 border-contrast appearance-none focus:outline-none focus:ring-0 focus:border-primary peer"
             />
             <label
@@ -115,28 +134,28 @@ export async function NewRoutePage({
                 {directionsData.routes[0].legs[0].duration.text}
               </li>
             </ul>
-            {/* <NewRouteForm> */}
-              {/* {placeSourceId && (
+            <NewRouteForm>
+              {placeSourceId && (
                 <input
                   type="hidden"
                   name="sourceId"
                   defaultValue={placeSourceId}
                 />
               )}
-              {placeDestinationId && ( */}
+              {placeDestinationId && (
                 <input
                   type="hidden"
                   name="destinationId"
-                  defaultValue={""/*placeDestinationId*/}
+                  defaultValue={placeDestinationId}
                 />
-              {/* )} */}
+              )}
               <button
                 type="submit"
                 className="bg-main text-primary font-bold p-2 rounded mt-4"
               >
                 Adicionar rota
               </button>
-            {/* </NewRouteForm> */}
+            </NewRouteForm>
           </div>
         )}
       </div>
